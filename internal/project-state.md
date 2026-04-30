@@ -19,7 +19,7 @@ Default branch: main
 Provider: GitHub
 Remote URL: https://github.com/edgaras87/checkout-system.git
 Visibility: public
-Description: empty during Stratum 1
+Description: Correctness-driven checkout backend for resolving purchase attempts into one consistent final outcome under concurrency, retries, and unreliable external signals
 ```
 
 ---
@@ -28,17 +28,56 @@ Description: empty during Stratum 1
 
 ```text
 Phase: Preparation
-Stratum: 1 — Project Workspace & History
-Status: completed
-Next: Stratum 2 — System Definition
+Current stratum: 3 — Execution Environment
+Completed strata:
+    - Stratum 1 — Project Workspace & History
+    - Stratum 2 — System Definition
+Status: ready to begin Stratum 3
 ```
 
 ---
 
-## **4. Notes**
+## **4. System Definition State**
 
 ```text
-Repository description will be defined after Stratum 2.
-System description is not defined yet.
-README is intentionally minimal.
+System definition: completed
+Internal source of truth: internal/system-definition/
+Execution bridge: internal/execution/slice-landscape.md
+Public projection: docs/
+Repository entry point: README.md
+```
+
+---
+
+## **5. Current Project State**
+
+```text
+- repository workspace is initialized
+- git history convention is established
+- system definition is authoritative
+- problem space is mapped
+- candidate slices are identified
+- public documentation exists
+- README exists as navigation entry point
+```
+
+---
+
+## **6. Next Step**
+
+```text
+Begin Stratum 3 — Execution Environment
+
+Goal:
+Define where and how infrastructure runs locally
+```
+
+---
+
+## **7. Notes**
+
+```text
+System Definition is complete enough to support controlled execution
+
+Future strata must align with the established system definition and must not redefine system identity, boundaries, or responsibility areas
 ```

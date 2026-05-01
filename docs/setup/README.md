@@ -4,18 +4,21 @@ Local setup documentation for this project.
 
 ## Related Setup Guides
 
-```text
-No setup documents are defined yet.
-````
+- [Local Containers](local-containers.md)
 
 ## Current Coverage
 
-Setup instructions will be added as the project becomes executable.
+Setup instructions are added progressively as the project becomes executable.
 
-Expected setup areas:
+Current setup coverage:
 
 ```text
 - execution environment
+```
+
+Expected future setup areas:
+
+```text
 - infrastructure services
 - service constraints
 - application bootstrap

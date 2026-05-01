@@ -1,4 +1,17 @@
 name: checkout-system
 
-services: {}
-# Infrastructure services are introduced in Stratum 4.
+services:
+  postgres:
+    image: postgres:16
+    container_name: checkout-system-postgres
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_ROOT_USER:-postgres_root}
+      POSTGRES_PASSWORD: ${POSTGRES_ROOT_PASSWORD:-postgres_root_password}
+    volumes:
+      - checkout-system-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  checkout-system-postgres-data:

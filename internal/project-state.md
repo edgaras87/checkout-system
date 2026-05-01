@@ -28,11 +28,12 @@ Description: Correctness-driven checkout backend for resolving purchase attempts
 
 ```text
 Phase: Preparation
-Current stratum: 3 — Execution Environment
+Current stratum: 4 — Infrastructure Services
 Completed strata:
     - Stratum 1 — Project Workspace & History
     - Stratum 2 — System Definition
-Status: ready to begin Stratum 3
+    - Stratum 3 — Execution Environment
+Status: ready to begin Stratum 4
 ```
 
 ---
@@ -49,7 +50,20 @@ Repository entry point: README.md
 
 ---
 
-## **5. Current Project State**
+## **5. Execution Environment State**
+
+```text
+Execution environment: completed
+Local orchestration entry point: compose.yaml
+Local setup entry point: docs/setup/README.md
+Local container setup: docs/setup/local-containers.md
+Runtime model: Docker-compatible container runtime
+Orchestration model: Compose
+```
+
+---
+
+## **6. Current Project State**
 
 ```text
 - repository workspace is initialized
@@ -59,25 +73,39 @@ Repository entry point: README.md
 - candidate slices are identified
 - public documentation exists
 - README exists as navigation entry point
+- local setup documentation exists
+- local container execution model is documented
+- Compose orchestration entry point exists
+- infrastructure services are not defined yet
 ```
 
 ---
 
-## **6. Next Step**
+## **7. Next Step**
 
 ```text
-Begin Stratum 3 — Execution Environment
+Begin Stratum 4 — Infrastructure Services
 
 Goal:
-Define where and how infrastructure runs locally
+Define concrete infrastructure services required by the system
+```
+
+Expected first service:
+
+```text
+PostgreSQL
 ```
 
 ---
 
-## **7. Notes**
+## **8. Notes**
 
 ```text
 System Definition is complete enough to support controlled execution
 
+Execution Environment is complete enough to host local infrastructure services
+
 Future strata must align with the established system definition and must not redefine system identity, boundaries, or responsibility areas
+
+Infrastructure services must be added into the defined local execution environment
 ```

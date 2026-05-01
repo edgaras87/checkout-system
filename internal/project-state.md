@@ -28,12 +28,13 @@ Description: Correctness-driven checkout backend for resolving purchase attempts
 
 ```text
 Phase: Preparation
-Current stratum: 4 — Infrastructure Services
+Current stratum: 5 — Service Constraints
 Completed strata:
     - Stratum 1 — Project Workspace & History
     - Stratum 2 — System Definition
     - Stratum 3 — Execution Environment
-Status: ready to begin Stratum 4
+    - Stratum 4 — Infrastructure Services
+Status: ready to begin Stratum 5
 ```
 
 ---
@@ -63,7 +64,20 @@ Orchestration model: Compose
 
 ---
 
-## **6. Current Project State**
+## **6. Infrastructure Services State**
+
+```text
+Infrastructure services: completed
+Defined infrastructure service: PostgreSQL
+Service role: persistent state service
+Local service documentation: docs/setup/postgres-local.md
+Service execution model: containerized PostgreSQL managed through Compose
+Persistent storage model: local named volume
+```
+
+---
+
+## **7. Current Project State**
 
 ```text
 - repository workspace is initialized
@@ -76,36 +90,54 @@ Orchestration model: Compose
 - local setup documentation exists
 - local container execution model is documented
 - Compose orchestration entry point exists
-- infrastructure services are not defined yet
+- PostgreSQL infrastructure service is defined
+- PostgreSQL runs locally through Compose
+- PostgreSQL service-level configuration is documented
+- infrastructure services are completed
+- service constraints are not defined yet
 ```
 
 ---
 
-## **7. Next Step**
+## **8. Next Step**
 
 ```text
-Begin Stratum 4 — Infrastructure Services
+Begin Stratum 5 — Service Constraints
 
 Goal:
-Define concrete infrastructure services required by the system
+Define internal constraints for infrastructure services that require them
 ```
 
-Expected first service:
+Expected first constraint area:
 
 ```text
-PostgreSQL
+PostgreSQL database structure and access model
+```
+
+This includes defining:
+
+```text
+- database role model
+- schema model
+- privileges
+- migration ownership
+- runtime access boundaries
 ```
 
 ---
 
-## **8. Notes**
+## **9. Notes**
 
 ```text
 System Definition is complete enough to support controlled execution
 
 Execution Environment is complete enough to host local infrastructure services
 
+Infrastructure Services are complete enough to provide PostgreSQL as the local persistent state service
+
 Future strata must align with the established system definition and must not redefine system identity, boundaries, or responsibility areas
 
-Infrastructure services must be added into the defined local execution environment
+Service constraints must define internal rules for PostgreSQL without redefining the system behavior
+
+Application bootstrap must not happen before service constraints are defined
 ```

@@ -96,6 +96,13 @@
 			<scope>test</scope>
 		</dependency>
 
+    <!-- TestRestTemplate support for random-port HTTP integration tests -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-restclient</artifactId>
+      <scope>test</scope>
+    </dependency>
+
 	</dependencies>
 	<build>
 		<plugins>

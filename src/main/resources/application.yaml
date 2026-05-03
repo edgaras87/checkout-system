@@ -1,3 +1,6 @@
 spring:
   application:
     name: checkout-system
+
+  config:
+    import: optional:file:.env[.properties]

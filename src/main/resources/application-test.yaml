@@ -1,0 +1,3 @@
+# Test profile.
+# Datasource, JPA, and Flyway configuration are introduced
+# when persistence wiring is added.

@@ -103,6 +103,13 @@
       <scope>test</scope>
     </dependency>
 
+		<!-- Boilerplate Reduction -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>
@@ -142,6 +149,20 @@
 						-Xshare:off
 						-javaagent:${org.mockito:mockito-core:jar}
 					</argLine>
+				</configuration>
+			</plugin>
+
+			<!-- Allows Lombok annotations to be processed during Java compilation -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 		</plugins>

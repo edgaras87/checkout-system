@@ -64,7 +64,19 @@ A graceful shutdown after `Ctrl+C` is expected and is not a failure.
 
 The `test` profile is reserved for automated tests.
 
-## Integration Test Runtime
+## Tests
+
+The standard project test command is:
+
+```bash
+./mvnw test
+```
+
+At this stage, this command runs the project verification baseline, including:
+
+```text
+- PostgreSQL Testcontainers integration tests
+```
 
 Testcontainers-based integration tests require a Docker-compatible container runtime.
 
@@ -102,12 +114,12 @@ Current setup coverage:
 - application bootstrap
 - local application startup
 - integration test runtime setup
+- PostgreSQL integration test execution baseline
 ```
 
 Expected future setup areas:
 
 ```text
-- integration test execution baseline
 - web smoke verification
 - API error handling verification
 - construction-phase runtime usage

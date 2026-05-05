@@ -83,4 +83,8 @@ These parts operate within defined responsibilities while coordinating to produc
 
 ## Status
 
-System definition complete. Implementation not started.
+Preparation phase completed.
+
+Application bootstrap is in place, including local PostgreSQL setup, Flyway baseline, Testcontainers verification, web smoke testing, and API error handling baseline.
+
+Checkout business implementation has not started yet.

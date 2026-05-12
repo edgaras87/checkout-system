@@ -1,0 +1,35 @@
+# Build output
+target/
+
+# IDEs
+### STS ###
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+### VS Code ###
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs / compiled artifacts
+*.log
+*.class
+
+# Env files
+.env
+.env.*
+!.env.example

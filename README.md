@@ -25,3 +25,4 @@ Checkout Outcome Resolution
 
 * [System Overview](docs/system-overview.md)
 * [Methodology](docs/methodology.md)
+* [Local Setup](docs/setup/README.md)

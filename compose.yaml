@@ -1,0 +1,4 @@
+name: checkout-system
+
+services: {}
+# Infrastructure services are introduced in Stratum 4.

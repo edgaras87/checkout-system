@@ -45,8 +45,8 @@ Correctness-driven checkout backend for resolving purchase attempts into one con
 
 ```text
 Phase: Preparation
-Current stratum: Stratum 2 — System Definition completed
-Status: ready to begin Stratum 3 — Execution Environment
+Current stratum: Stratum 3 — Execution Environment completed
+Status: ready to begin Stratum 4 — Infrastructure Services
 Construction status: not started
 ```
 
@@ -56,6 +56,7 @@ Construction status: not started
 Completed strata:
     - Stratum 1 — Project Workspace & History
     - Stratum 2 — System Definition
+    - Stratum 3 — Execution Environment
 ```
 
 Stratum 1 established:
@@ -85,6 +86,16 @@ Stratum 2 established:
 - internal project navigation map
 ```
 
+Stratum 3 established:
+
+```text
+- Docker-compatible local container runtime expectation
+- Compose as local orchestration mechanism
+- compose.yaml as project-level orchestration entry point
+- setup documentation for local container usage
+- setup/local environment reading path in the project map
+```
+
 ## 6. Active Constraints
 
 ```text
@@ -93,6 +104,11 @@ Stratum 2 established:
 - README is an entry point, not a project-state record.
 - project-map.md routes reading and does not define project truth.
 - slice-register.md is an execution bridge and does not solve Work Units.
+- The execution environment defines how local infrastructure runs, not which services exist.
+- compose.yaml is the local orchestration entry point.
+- Concrete infrastructure services are deferred to Stratum 4.
+- Service constraints are deferred to Stratum 5.
+- Application bootstrap is deferred to Stratum 6.
 - Construction has not started.
 - Later strata must align with System Definition.
 ```
@@ -100,8 +116,6 @@ Stratum 2 established:
 Not yet defined:
 
 ```text
-- execution environment
-- local setup model
 - infrastructure services
 - service constraints
 - application bootstrap
@@ -112,15 +126,15 @@ Not yet defined:
 ## 7. Readiness / Next Transition
 
 ```text
-Stratum 2 — System Definition is complete.
+Stratum 3 — Execution Environment is complete.
 
-The project is ready to begin Stratum 3 — Execution Environment.
+The project is ready to begin Stratum 4 — Infrastructure Services.
 ```
 
 Next expected work:
 
 ```text
-Define the execution environment needed to support later infrastructure, application bootstrap, and validation work.
+Define the concrete local infrastructure services required to support later service constraints, application bootstrap, and validation work.
 ```
 
 ## 8. Deferred or Unresolved Work
@@ -128,8 +142,6 @@ Define the execution environment needed to support later infrastructure, applica
 Deferred to later Preparation strata:
 
 ```text
-- execution environment definition
-- local setup model
 - infrastructure services
 - service constraints
 - application bootstrap
@@ -170,5 +182,5 @@ Do not update this document for:
 ## 10. One-Line State
 
 ```text
-Stratum 2 — System Definition is complete; the project is ready to begin Stratum 3 — Execution Environment.
+Stratum 3 — Execution Environment is complete; the project is ready to begin Stratum 4 — Infrastructure Services.
 ```

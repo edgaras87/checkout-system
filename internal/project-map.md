@@ -187,7 +187,9 @@ Use this path when the task is about:
 - local setup
 - container runtime expectations
 - Compose usage
-- local infrastructure orchestration
+- local infrastructure service orchestration
+- local PostgreSQL service usage
+- local infrastructure inspection
 ```
 
 Read:
@@ -195,7 +197,9 @@ Read:
 ```text
 docs/setup/README.md
 docs/setup/local-containers.md
+docs/setup/postgres-local.md
 compose.yaml
+.env.example
 ```
 
 Responsibilities:
@@ -207,15 +211,33 @@ docs/setup/README.md
 docs/setup/local-containers.md
     → local container runtime and Compose usage
 
+docs/setup/postgres-local.md
+    → local PostgreSQL service usage
+
 compose.yaml
-    → project-level local orchestration entry point
+    → project-level local infrastructure orchestration
+
+.env.example
+    → example local service-level environment variables
+```
+
+This path defines:
+
+```text
+- local infrastructure service existence
+- local service execution model
+- local service configuration shape
+- local service usage
 ```
 
 This path does not define:
 
 ```text
-- infrastructure services
 - service constraints
+- database role model
+- schemas
+- privileges
+- migrations
 - application bootstrap
 - system behavior
 - project state
@@ -319,12 +341,14 @@ docs/methodology.md
 
 ### Setup / Local Environment Consistency Group
 
-Check together when local setup or execution environment changes:
+Check together when local setup, execution environment, or infrastructure service usage changes:
 
 ```text
 compose.yaml
+.env.example
 docs/setup/README.md
 docs/setup/local-containers.md
+docs/setup/postgres-local.md
 internal/project-map.md
 internal/project-state.md
 ```

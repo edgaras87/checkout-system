@@ -45,8 +45,8 @@ Correctness-driven checkout backend for resolving purchase attempts into one con
 
 ```text
 Phase: Preparation
-Current stratum: Stratum 3 — Execution Environment completed
-Status: ready to begin Stratum 4 — Infrastructure Services
+Current stratum: Stratum 4 — Infrastructure Services completed
+Status: ready to begin Stratum 5 — Service Constraints
 Construction status: not started
 ```
 
@@ -57,6 +57,7 @@ Completed strata:
     - Stratum 1 — Project Workspace & History
     - Stratum 2 — System Definition
     - Stratum 3 — Execution Environment
+    - Stratum 4 — Infrastructure Services
 ```
 
 Stratum 1 established:
@@ -96,6 +97,19 @@ Stratum 3 established:
 - setup/local environment reading path in the project map
 ```
 
+Stratum 4 established:
+
+```text
+- PostgreSQL as the local infrastructure service
+- PostgreSQL as the persistent state service
+- PostgreSQL service definition in compose.yaml
+- service-level PostgreSQL environment variables
+- example local environment file
+- persistent named volume for local PostgreSQL data
+- local PostgreSQL setup documentation
+- setup/local environment reading path updated for PostgreSQL service usage
+```
+
 ## 6. Active Constraints
 
 ```text
@@ -104,9 +118,13 @@ Stratum 3 established:
 - README is an entry point, not a project-state record.
 - project-map.md routes reading and does not define project truth.
 - slice-register.md is an execution bridge and does not solve Work Units.
-- The execution environment defines how local infrastructure runs, not which services exist.
-- compose.yaml is the local orchestration entry point.
-- Concrete infrastructure services are deferred to Stratum 4.
+- The execution environment defines how local infrastructure runs.
+- Infrastructure services define which local service capabilities exist.
+- PostgreSQL exists only as a local infrastructure service at this stage.
+- PostgreSQL bootstrap variables are container initialization settings, not the final database authority model.
+- compose.yaml is the local infrastructure orchestration entry point.
+- .env.example defines example service-level local configuration.
+- docs/setup/postgres-local.md explains local PostgreSQL service usage.
 - Service constraints are deferred to Stratum 5.
 - Application bootstrap is deferred to Stratum 6.
 - Construction has not started.
@@ -116,8 +134,10 @@ Stratum 3 established:
 Not yet defined:
 
 ```text
-- infrastructure services
-- service constraints
+- database role model
+- schemas
+- privileges
+- migrations
 - application bootstrap
 - baseline runtime
 - baseline verification
@@ -126,15 +146,15 @@ Not yet defined:
 ## 7. Readiness / Next Transition
 
 ```text
-Stratum 3 — Execution Environment is complete.
+Stratum 4 — Infrastructure Services is complete.
 
-The project is ready to begin Stratum 4 — Infrastructure Services.
+The project is ready to begin Stratum 5 — Service Constraints.
 ```
 
 Next expected work:
 
 ```text
-Define the concrete local infrastructure services required to support later service constraints, application bootstrap, and validation work.
+Define the internal rules and constraints required for PostgreSQL service usage, including database authority, role separation, schema ownership, and privilege boundaries.
 ```
 
 ## 8. Deferred or Unresolved Work
@@ -142,7 +162,6 @@ Define the concrete local infrastructure services required to support later serv
 Deferred to later Preparation strata:
 
 ```text
-- infrastructure services
 - service constraints
 - application bootstrap
 ```
@@ -182,5 +201,5 @@ Do not update this document for:
 ## 10. One-Line State
 
 ```text
-Stratum 3 — Execution Environment is complete; the project is ready to begin Stratum 4 — Infrastructure Services.
+Stratum 4 — Infrastructure Services is complete; the project is ready to begin Stratum 5 — Service Constraints.
 ```

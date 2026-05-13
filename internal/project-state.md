@@ -10,7 +10,18 @@ It answers:
 What is true about the project state right now?
 ```
 
-It does not define system behavior, project navigation, public explanation, implementation design, correctness construction, or validation evidence.
+It does not define:
+
+```text
+- system behavior
+- project navigation
+- public explanation
+- implementation design
+- correctness construction
+- validation evidence
+```
+
+---
 
 ## 2. Project Identity
 
@@ -25,6 +36,8 @@ Project description:
 ```text
 Correctness-driven checkout backend for resolving purchase attempts into one consistent final outcome under concurrency, retries, and unreliable external signals.
 ```
+
+---
 
 ## 3. Repository
 
@@ -41,14 +54,24 @@ Repository description:
 Correctness-driven checkout backend for resolving purchase attempts into one consistent final outcome under concurrency, retries, and unreliable external signals.
 ```
 
+---
+
 ## 4. Current Execution Position
 
 ```text
 Phase: Preparation
-Current stratum: Stratum 4 — Infrastructure Services completed
-Status: ready to begin Stratum 5 — Service Constraints
-Construction status: not started
+
+Current stratum:
+    Stratum 5 — Service Constraints completed
+
+Status:
+    ready to begin Stratum 6 — Application Bootstrap
+
+Construction status:
+    not started
 ```
+
+---
 
 ## 5. Completed Preparation Work
 
@@ -58,9 +81,10 @@ Completed strata:
     - Stratum 2 — System Definition
     - Stratum 3 — Execution Environment
     - Stratum 4 — Infrastructure Services
+    - Stratum 5 — Service Constraints
 ```
 
-Stratum 1 established:
+### Stratum 1 established
 
 ```text
 - controlled repository workspace
@@ -70,7 +94,7 @@ Stratum 1 established:
 - initial project state record
 ```
 
-Stratum 2 established:
+### Stratum 2 established
 
 ```text
 - project description
@@ -87,7 +111,7 @@ Stratum 2 established:
 - internal project navigation map
 ```
 
-Stratum 3 established:
+### Stratum 3 established
 
 ```text
 - Docker-compatible local container runtime expectation
@@ -97,7 +121,7 @@ Stratum 3 established:
 - setup/local environment reading path in the project map
 ```
 
-Stratum 4 established:
+### Stratum 4 established
 
 ```text
 - PostgreSQL as the local infrastructure service
@@ -110,6 +134,27 @@ Stratum 4 established:
 - setup/local environment reading path updated for PostgreSQL service usage
 ```
 
+### Stratum 5 established
+
+```text
+- PostgreSQL authority model
+- bootstrap database identity
+- project database identity
+- project database role separation
+- project database ownership model
+- application schema ownership model
+- migration authority boundary
+- runtime privilege boundary
+- executable PostgreSQL initialization scripts
+- executable database authority verification
+- local constrained PostgreSQL setup documentation
+- local credential and database role contract
+- service constraints reading path in the project map
+- internal interpretation of database model verification
+```
+
+---
+
 ## 6. Active Constraints
 
 ```text
@@ -120,12 +165,17 @@ Stratum 4 established:
 - slice-register.md is an execution bridge and does not solve Work Units.
 - The execution environment defines how local infrastructure runs.
 - Infrastructure services define which local service capabilities exist.
-- PostgreSQL exists only as a local infrastructure service at this stage.
-- PostgreSQL bootstrap variables are container initialization settings, not the final database authority model.
+- PostgreSQL authority is constrained before application bootstrap begins.
+- PostgreSQL bootstrap variables are container initialization settings, not application database ownership.
 - compose.yaml is the local infrastructure orchestration entry point.
-- .env.example defines example service-level local configuration.
-- docs/setup/postgres-local.md explains local PostgreSQL service usage.
-- Service constraints are deferred to Stratum 5.
+- .env.example defines the local credential and database role contract.
+- docs/system/database-role-model.md defines PostgreSQL authority boundaries.
+- db/init/ defines executable PostgreSQL authority initialization and verification.
+- checkout_runtime must not own or mutate database structure.
+- checkout_migrator owns future application schema evolution.
+- Future application migrations are expected to run as checkout_migrator.
+- Application business schema does not yet exist.
+- Flyway application migrations do not yet exist.
 - Application bootstrap is deferred to Stratum 6.
 - Construction has not started.
 - Later strata must align with System Definition.
@@ -134,35 +184,108 @@ Stratum 4 established:
 Not yet defined:
 
 ```text
-- database role model
-- schemas
-- privileges
-- migrations
-- application bootstrap
-- baseline runtime
-- baseline verification
+- application business tables
+- application persistence model
+- Flyway baseline migration
+- Spring Boot runtime configuration
+- application runtime database integration
+- baseline runtime verification
+- correctness slice implementation
 ```
 
-## 7. Readiness / Next Transition
+---
+
+## 7. Service Constraints State
+
+Current constrained PostgreSQL authority model:
 
 ```text
-Stratum 4 — Infrastructure Services is complete.
+Bootstrap database:
+    postgres
 
-The project is ready to begin Stratum 5 — Service Constraints.
+Project database:
+    checkout_system
+
+Application schema:
+    app
+```
+
+Current PostgreSQL role model:
+
+```text
+postgres_root:
+    bootstrap/superuser authority
+
+checkout_admin:
+    project database owner
+
+checkout_migrator:
+    schema owner and migration authority
+
+checkout_runtime:
+    runtime data access only
+```
+
+Current authority boundaries:
+
+```text
+checkout_runtime:
+    may manipulate application data
+    must not mutate database structure
+
+checkout_migrator:
+    owns future application schema evolution
+
+public schema:
+    must not be used as an uncontrolled application schema
+```
+
+Current executable authority artifacts:
+
+```text
+docs/system/database-role-model.md
+db/init/
+docs/setup/postgres-local.md
+.env.example
+internal/preparation/postgresql-database-model-verification.md
+```
+
+Current verification state:
+
+```text
+- database authority model is executable
+- database authority model is verifiable
+- verification interpretation is recorded
+- application tables are intentionally not created yet
+```
+
+---
+
+## 8. Readiness / Next Transition
+
+```text
+Stratum 5 — Service Constraints is complete.
+
+The project is ready to begin Stratum 6 — Application Bootstrap.
 ```
 
 Next expected work:
 
 ```text
-Define the internal rules and constraints required for PostgreSQL service usage, including database authority, role separation, schema ownership, and privilege boundaries.
+- establish Spring Boot application baseline
+- establish runtime configuration
+- establish Flyway baseline migration structure
+- connect application runtime to constrained PostgreSQL model
+- establish baseline runtime verification
 ```
 
-## 8. Deferred or Unresolved Work
+---
+
+## 9. Deferred or Unresolved Work
 
 Deferred to later Preparation strata:
 
 ```text
-- service constraints
 - application bootstrap
 ```
 
@@ -176,7 +299,9 @@ Deferred to Construction:
 - Final Outcome Composition Correctness
 ```
 
-## 9. Last Updated Rule
+---
+
+## 10. Last Updated Rule
 
 Update this document when:
 
@@ -198,8 +323,10 @@ Do not update this document for:
 - minor formatting cleanup
 ```
 
-## 10. One-Line State
+---
+
+## 11. One-Line State
 
 ```text
-Stratum 4 — Infrastructure Services is complete; the project is ready to begin Stratum 5 — Service Constraints.
+Stratum 5 — Service Constraints is complete; PostgreSQL authority is now constrained, executable, verifiable, and ready for Application Bootstrap.
 ```

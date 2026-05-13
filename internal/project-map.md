@@ -212,13 +212,13 @@ docs/setup/local-containers.md
     → local container runtime and Compose usage
 
 docs/setup/postgres-local.md
-    → local PostgreSQL service usage
+    → local PostgreSQL service usage and constrained setup guidance
 
 compose.yaml
     → project-level local infrastructure orchestration
 
 .env.example
-    → example local service-level environment variables
+    → example local service-level and database role environment variables
 ```
 
 This path defines:
@@ -228,22 +228,88 @@ This path defines:
 - local service execution model
 - local service configuration shape
 - local service usage
+- local PostgreSQL setup entry point
 ```
 
 This path does not define:
 
 ```text
-- service constraints
-- database role model
-- schemas
-- privileges
-- migrations
-- application bootstrap
 - system behavior
 - project state
+- correctness slices
+- application business schema
+- application bootstrap behavior
 ```
 
-## 8. Execution Bridge Reading Path
+## 8. Service Constraints Reading Path
+
+Use this path when the task is about:
+
+```text
+- PostgreSQL authority model
+- database role separation
+- database ownership
+- schema ownership
+- migration authority
+- runtime privilege boundaries
+- database bootstrap verification
+```
+
+Read:
+
+```text
+docs/system/database-role-model.md
+db/init/
+docs/setup/postgres-local.md
+.env.example
+internal/preparation/postgresql-database-model-verification.md
+```
+
+Responsibilities:
+
+```text
+docs/system/database-role-model.md
+    → explains the PostgreSQL authority model
+
+db/init/
+    → executable PostgreSQL initialization and verification scripts
+
+docs/setup/postgres-local.md
+    → explains how to apply and verify constrained local PostgreSQL setup
+
+.env.example
+    → example local credential and database role contract
+
+internal/preparation/postgresql-database-model-verification.md
+    → internal interpretation of database model verification
+```
+
+This path defines:
+
+```text
+- bootstrap database identity
+- project database identity
+- application schema identity
+- bootstrap role
+- database owner role
+- migration role
+- runtime role
+- runtime access boundary
+- verification interpretation
+```
+
+This path does not define:
+
+```text
+- business tables
+- application entities
+- reservation schema
+- checkout workflow
+- API contracts
+- Construction slice behavior
+```
+
+## 9. Execution Bridge Reading Path
 
 Use this path when the task is about:
 
@@ -265,7 +331,7 @@ The slice register identifies executable correctness slices.
 
 It does not solve them.
 
-## 9. Construction Reading Path
+## 10. Construction Reading Path
 
 Use this path when the task is about:
 
@@ -309,7 +375,7 @@ internal/execution/slices/
 
 Detailed slice truth belongs in the slice artifacts, not in this map.
 
-## 10. Consistency Groups
+## 11. Consistency Groups
 
 ### System Definition Consistency Group
 
@@ -353,6 +419,20 @@ internal/project-map.md
 internal/project-state.md
 ```
 
+### Service Constraints Consistency Group
+
+Check together when PostgreSQL authority, roles, schemas, privileges, or verification changes:
+
+```text
+docs/system/database-role-model.md
+db/init/
+docs/setup/postgres-local.md
+.env.example
+internal/preparation/postgresql-database-model-verification.md
+internal/project-map.md
+internal/project-state.md
+```
+
 ### Execution Bridge Consistency Group
 
 Check together when candidate Work Units or execution entry changes:
@@ -364,7 +444,7 @@ internal/execution/slice-register.md
 internal/project-state.md
 ```
 
-## 11. External Convention Use Rule
+## 12. External Convention Use Rule
 
 Reusable conventions live outside this repository.
 
@@ -400,7 +480,7 @@ External conventions define reusable structure and process.
 
 Project-specific truth remains in this repository.
 
-## 12. Maintenance Rule
+## 13. Maintenance Rule
 
 Update this project map when:
 
@@ -430,7 +510,7 @@ internal/project-state.md
 
 This map changes when navigation changes.
 
-## 13. One-Line Mental Model
+## 14. One-Line Mental Model
 
 ```text
 Use this map to find where to read; do not use it as the source of truth.

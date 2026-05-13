@@ -16,11 +16,11 @@ Current setup coverage:
 ```text
 - execution environment
 - infrastructure services
+- service constraints
 ```
 
 Expected future setup areas:
 
 ```text
-- service constraints
 - application bootstrap
 ```

@@ -4,8 +4,18 @@ This document explains how to run PostgreSQL locally for the project.
 
 PostgreSQL is used as the local persistent state service.
 
-At this stage, PostgreSQL is only defined as an infrastructure service.
-Database roles, schemas, privileges, migrations, and application connection are defined later.
+The service is now defined with local database constraints:
+
+```text
+- bootstrap PostgreSQL role
+- bootstrap database
+- project database
+- project database roles
+- application schema
+- runtime privilege boundary
+```
+
+Application bootstrap and business schema migrations are defined later.
 
 ---
 
@@ -47,7 +57,7 @@ The project includes:
 .env.example
 ```
 
-This file is a template for local PostgreSQL environment variables.
+This file is a template for local PostgreSQL service environment variables.
 
 To create a local environment file:
 
@@ -68,6 +78,28 @@ POSTGRES_PORT
 POSTGRES_DB
 POSTGRES_ROOT_USER
 POSTGRES_ROOT_PASSWORD
+```
+
+Current local defaults:
+
+```text
+POSTGRES_PORT=5432
+POSTGRES_DB=postgres
+POSTGRES_ROOT_USER=postgres_root
+POSTGRES_ROOT_PASSWORD=postgres_root_password
+```
+
+Important:
+
+```text
+POSTGRES_DB is the bootstrap database created by the PostgreSQL container.
+It is not the project database used by the application.
+```
+
+The project database is created later by the initialization scripts:
+
+```text
+Project database: checkout_system
 ```
 
 ---
@@ -124,7 +156,207 @@ Exit:
 
 The current local connection uses the PostgreSQL bootstrap user created by the container.
 
-Project-specific database roles are defined later in Service Constraints.
+Project-specific database roles and the project database are defined through the service constraint initialization scripts.
+
+---
+
+## Apply Database Service Constraints
+
+Database service constraints are defined in:
+
+```text
+docs/system/database-role-model.md
+```
+
+They are applied locally through initialization scripts in:
+
+```text
+db/init/
+```
+
+Expected script order:
+
+```text
+01-create-roles.sql
+02-create-database.sql
+03-grant-database-access.sql
+04-create-schema.sql
+05-grant-runtime-privileges.sql
+06-verify-database-model.sql
+```
+
+These scripts establish:
+
+```text
+- project database roles
+- project database creation
+- project database ownership
+- application schema ownership
+- runtime access boundaries
+- verification checks
+```
+
+---
+
+### 1. Create Project Roles
+
+```bash
+docker exec -i checkout-system-postgres \
+  psql -U postgres_root -d postgres \
+  < db/init/01-create-roles.sql
+```
+
+---
+
+### 2. Create Project Database
+
+```bash
+docker exec -i checkout-system-postgres \
+  psql -U postgres_root -d postgres \
+  < db/init/02-create-database.sql
+```
+
+Expected project database:
+
+```text
+checkout_system
+```
+
+---
+
+### 3. Grant Database Access
+
+```bash
+docker exec -i checkout-system-postgres \
+  psql -U postgres_root -d postgres \
+  < db/init/03-grant-database-access.sql
+```
+
+---
+
+### 4. Create Application Schema
+
+```bash
+docker exec -i checkout-system-postgres \
+  psql -U postgres_root -d checkout_system \
+  < db/init/04-create-schema.sql
+```
+
+---
+
+### 5. Grant Runtime Privileges
+
+```bash
+docker exec -i checkout-system-postgres \
+  psql -U checkout_migrator -d checkout_system \
+  < db/init/05-grant-runtime-privileges.sql
+```
+
+---
+
+### 6. Verify Database Model
+
+```bash
+docker exec -i checkout-system-postgres \
+  psql -U postgres_root -d checkout_system \
+  < db/init/06-verify-database-model.sql
+```
+
+Expected ownership:
+
+```text
+checkout_system database:
+    owner: checkout_admin
+
+app schema:
+    owner: checkout_migrator
+```
+
+Expected runtime boundary:
+
+```text
+checkout_runtime:
+    can use application data
+    cannot modify database structure
+```
+
+Expected result summary:
+
+```text
+project roles exist
+project roles have limited capabilities
+checkout_admin owns checkout_system
+checkout_migrator owns app
+checkout_runtime can use app
+checkout_runtime cannot create objects in app
+future tables created by checkout_migrator grant runtime data access to checkout_runtime
+future sequences created by checkout_migrator grant runtime sequence access to checkout_runtime
+checkout_runtime cannot delegate those privileges to other roles
+```
+
+This verification does not prove:
+
+```text
+- application tables exist
+- application sequences exist
+- runtime privileges on actual application tables
+- runtime privileges on actual application sequences
+- indexes or constraints exist
+- persistence behavior works
+```
+
+Those checks belong later, after real application migrations exist.
+
+Detailed output interpretation:
+
+```text
+internal/preparation/postgresql-database-model-verification.md
+```
+
+If using Podman, replace `docker` with `podman`.
+
+---
+
+## Reinitialize After Role Model Changes
+
+If the PostgreSQL volume was created before the current role model, recreate the local database volume:
+
+```bash
+docker compose down -v
+docker compose up -d postgres
+```
+
+Use this when changing:
+
+```text
+- POSTGRES_DB
+- POSTGRES_ROOT_USER
+- POSTGRES_ROOT_PASSWORD
+- project database name
+- database roles
+- database initialization scripts
+```
+
+The named volume stores initialized PostgreSQL state. Environment changes do not fully apply to an already-initialized volume.
+
+Important:
+
+```text
+POSTGRES_DB should remain the bootstrap database.
+For this project, the expected local value is postgres.
+```
+
+Do not set:
+
+```text
+POSTGRES_DB=checkout_system
+```
+
+The project database is created by:
+
+```text
+db/init/02-create-database.sql
+```
 
 ---
 
@@ -203,16 +435,23 @@ Included now:
 - service-level environment variables
 - local persistent volume
 - bootstrap PostgreSQL user for local service initialization
+- bootstrap database for local service initialization
+- project database role model
+- project database creation
+- application schema creation
+- runtime privilege boundary
+- database model verification
 ```
 
 Not included yet:
 
 ```text
-- project database role model
-- schemas
-- privileges
-- migrations
-- application database connection
+- application business tables
+- inventory reservation schema
+- order schema
+- payment schema
+- checkout outcome schema
 - Spring Boot configuration
-- domain tables
+- Flyway business migrations
+- application database connection
 ```

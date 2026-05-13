@@ -68,6 +68,9 @@ docs/system-overview.md
 docs/methodology.md
     Public explanation of the construction approach.
 
+docs/setup/README.md
+    Setup documentation entry point.
+
 internal/project-state.md
     Current project position and readiness record.
 
@@ -139,29 +142,7 @@ docs/methodology.md
 README.md
 ```
 
-## 6. Execution Bridge Reading Path
-
-Use this path when the task is about:
-
-```text
-- candidate Work Units
-- selected Work Unit
-- slice status
-- deferred correctness work
-- future Construction entry
-```
-
-Read:
-
-```text
-internal/execution/slice-register.md
-```
-
-The slice register identifies executable correctness slices.
-
-It does not solve them.
-
-## 7. Public Documentation Reading Path
+## 6. Public Documentation Reading Path
 
 Use this path when the task is about:
 
@@ -198,7 +179,71 @@ Public documentation explains selected project understanding.
 
 It does not replace internal truth.
 
-## 8. Construction Reading Path
+## 7. Setup / Local Environment Reading Path
+
+Use this path when the task is about:
+
+```text
+- local setup
+- container runtime expectations
+- Compose usage
+- local infrastructure orchestration
+```
+
+Read:
+
+```text
+docs/setup/README.md
+docs/setup/local-containers.md
+compose.yaml
+```
+
+Responsibilities:
+
+```text
+docs/setup/README.md
+    → setup documentation navigation
+
+docs/setup/local-containers.md
+    → local container runtime and Compose usage
+
+compose.yaml
+    → project-level local orchestration entry point
+```
+
+This path does not define:
+
+```text
+- infrastructure services
+- service constraints
+- application bootstrap
+- system behavior
+- project state
+```
+
+## 8. Execution Bridge Reading Path
+
+Use this path when the task is about:
+
+```text
+- candidate Work Units
+- selected Work Unit
+- slice status
+- deferred correctness work
+- future Construction entry
+```
+
+Read:
+
+```text
+internal/execution/slice-register.md
+```
+
+The slice register identifies executable correctness slices.
+
+It does not solve them.
+
+## 9. Construction Reading Path
 
 Use this path when the task is about:
 
@@ -242,7 +287,7 @@ internal/execution/slices/
 
 Detailed slice truth belongs in the slice artifacts, not in this map.
 
-## 9. Consistency Groups
+## 10. Consistency Groups
 
 ### System Definition Consistency Group
 
@@ -272,6 +317,18 @@ docs/system-overview.md
 docs/methodology.md
 ```
 
+### Setup / Local Environment Consistency Group
+
+Check together when local setup or execution environment changes:
+
+```text
+compose.yaml
+docs/setup/README.md
+docs/setup/local-containers.md
+internal/project-map.md
+internal/project-state.md
+```
+
 ### Execution Bridge Consistency Group
 
 Check together when candidate Work Units or execution entry changes:
@@ -283,7 +340,7 @@ internal/execution/slice-register.md
 internal/project-state.md
 ```
 
-## 10. External Convention Use Rule
+## 11. External Convention Use Rule
 
 Reusable conventions live outside this repository.
 
@@ -303,12 +360,15 @@ Relevant convention entry point:
 system-construction-conventions/conventions-map.md
 ```
 
-Relevant conventions for the current Stratum 2 structure:
+Relevant conventions for the current Preparation structure:
 
 ```text
-system-construction-conventions/system-definition-convention.md
+system-construction-conventions/execution-model-core.md
+system-construction-conventions/preparation-phase-reference.md
 system-construction-conventions/project-documentation-structure-convention.md
+system-construction-conventions/project-state-convention.md
 system-construction-conventions/project-map-convention.md
+system-construction-conventions/system-definition-convention.md
 system-construction-conventions/git-history-construction-convention.md
 ```
 
@@ -316,7 +376,7 @@ External conventions define reusable structure and process.
 
 Project-specific truth remains in this repository.
 
-## 11. Maintenance Rule
+## 12. Maintenance Rule
 
 Update this project map when:
 
@@ -346,7 +406,7 @@ internal/project-state.md
 
 This map changes when navigation changes.
 
-## 12. One-Line Mental Model
+## 13. One-Line Mental Model
 
 ```text
 Use this map to find where to read; do not use it as the source of truth.

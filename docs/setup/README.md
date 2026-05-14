@@ -88,11 +88,12 @@ The standard project test command is:
 ./mvnw test
 ```
 
-At this stage, this command runs the project verification baseline, including:
+This command runs the project verification baseline, including:
 
 ```text
 - PostgreSQL Testcontainers integration tests
 - web smoke tests
+- API error handling tests
 ```
 
 Testcontainers-based integration tests require a Docker-compatible container runtime.
@@ -134,11 +135,11 @@ Current setup coverage:
 - integration test runtime setup
 - PostgreSQL integration test execution baseline
 - web smoke verification
+- API error handling verification
 ```
 
 Expected future setup areas:
 
 ```text
-- API error handling verification
 - construction-phase runtime usage
 ```

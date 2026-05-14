@@ -62,10 +62,11 @@ Correctness-driven checkout backend for resolving purchase attempts into one con
 Phase: Preparation
 
 Current stratum:
-    Stratum 5 — Service Constraints completed
+    Stratum 6 — Application Bootstrap completed
 
 Status:
-    ready to begin Stratum 6 — Application Bootstrap
+    Preparation Phase completed
+    ready for Preparation exit review or Construction preparation
 
 Construction status:
     not started
@@ -82,6 +83,7 @@ Completed strata:
     - Stratum 3 — Execution Environment
     - Stratum 4 — Infrastructure Services
     - Stratum 5 — Service Constraints
+    - Stratum 6 — Application Bootstrap
 ```
 
 ### Stratum 1 established
@@ -153,6 +155,46 @@ Completed strata:
 - internal interpretation of database model verification
 ```
 
+### Stratum 6 established
+
+```text
+- Spring Boot application baseline
+- Java 21 application baseline
+- Maven build baseline
+- Maven Wrapper
+- application entry point
+- base package com.edge.checkout
+- profile-based configuration
+- dev profile for manual local startup
+- test profile for automated tests
+- .env import for local runtime configuration
+- datasource configuration
+- Flyway configuration
+- Spring Data JPA integration
+- PostgreSQL driver integration
+- JDBC support
+- Flyway PostgreSQL support
+- baseline migration
+- neutral migration path without business tables
+- Hibernate schema validation mode
+- disabled Hibernate schema mutation
+- disabled Open Session in View
+- generated generic context test removed after persistence wiring
+- Testcontainers runtime setup documentation
+- PostgreSQL Testcontainers integration test baseline
+- DB-only integration test base
+- web + DB integration test base
+- Flyway migration verification against real PostgreSQL
+- Maven Surefire discovery for *Test.java, *Tests.java, and *IT.java
+- web-only smoke test baseline
+- bootstrap HTTP sanity endpoint
+- GET /ping returns pong
+- Lombok configuration for boilerplate reduction
+- API error handling baseline
+- API error handling verification
+- implementation baseline docs as Preparation exit artifacts
+```
+
 ---
 
 ## 6. Active Constraints
@@ -165,31 +207,37 @@ Completed strata:
 - slice-register.md is an execution bridge and does not solve Work Units.
 - The execution environment defines how local infrastructure runs.
 - Infrastructure services define which local service capabilities exist.
-- PostgreSQL authority is constrained before application bootstrap begins.
+- PostgreSQL authority is constrained before application behavior begins.
 - PostgreSQL bootstrap variables are container initialization settings, not application database ownership.
 - compose.yaml is the local infrastructure orchestration entry point.
 - .env.example defines the local credential and database role contract.
 - docs/system/database-role-model.md defines PostgreSQL authority boundaries.
 - db/init/ defines executable PostgreSQL authority initialization and verification.
 - checkout_runtime must not own or mutate database structure.
-- checkout_migrator owns future application schema evolution.
-- Future application migrations are expected to run as checkout_migrator.
-- Application business schema does not yet exist.
-- Flyway application migrations do not yet exist.
-- Application bootstrap is deferred to Stratum 6.
+- checkout_migrator owns application schema evolution.
+- Application migrations run through Flyway.
+- Application runtime uses checkout_runtime.
+- Flyway uses checkout_migrator for local dev migration authority.
+- Hibernate validates schema compatibility but does not create or update schema.
+- Application Bootstrap intentionally defines no business tables.
+- Bootstrap HTTP endpoint is not business behavior.
+- API error handling baseline exists before business endpoints.
+- Implementation baseline docs constrain Construction implementation planning.
 - Construction has not started.
-- Later strata must align with System Definition.
+- Later Construction work must align with System Definition and implementation baselines.
 ```
 
 Not yet defined:
 
 ```text
+- reservation business behavior
+- order business behavior
+- payment business behavior
+- final outcome business behavior
 - application business tables
-- application persistence model
-- Flyway baseline migration
-- Spring Boot runtime configuration
-- application runtime database integration
-- baseline runtime verification
+- business persistence model
+- business API endpoints
+- runtime privileges on real business tables
 - correctness slice implementation
 ```
 
@@ -234,7 +282,7 @@ checkout_runtime:
     must not mutate database structure
 
 checkout_migrator:
-    owns future application schema evolution
+    owns application schema evolution through Flyway
 
 public schema:
     must not be used as an uncontrolled application schema
@@ -256,38 +304,254 @@ Current verification state:
 - database authority model is executable
 - database authority model is verifiable
 - verification interpretation is recorded
-- application tables are intentionally not created yet
+- application tables are intentionally not created during bootstrap
 ```
 
 ---
 
-## 8. Readiness / Next Transition
+## 8. Application Bootstrap State
+
+Application baseline:
 
 ```text
-Stratum 5 — Service Constraints is complete.
+Framework:
+    Spring Boot
 
-The project is ready to begin Stratum 6 — Application Bootstrap.
+Language:
+    Java
+
+Java version:
+    21
+
+Build tool:
+    Maven
+
+Packaging:
+    jar
+
+Base package:
+    com.edge.checkout
+
+Application entry point:
+    CheckoutSystemApplication
+```
+
+Configuration baseline:
+
+```text
+Shared configuration:
+    application.yaml
+
+Manual local profile:
+    dev
+
+Automated test profile:
+    test
+
+Local environment import:
+    optional:file:.env[.properties]
+```
+
+Persistence baseline:
+
+```text
+Persistence service:
+    PostgreSQL
+
+Migration tool:
+    Flyway
+
+Application schema:
+    app
+
+Baseline migration:
+    src/main/resources/db/migration/V1__baseline.sql
+
+Business tables:
+    not defined during Application Bootstrap
+```
+
+Runtime authority baseline:
+
+```text
+Runtime datasource authority:
+    checkout_runtime
+
+Migration authority:
+    checkout_migrator
+
+Runtime DDL:
+    not allowed
+
+Hibernate schema mutation:
+    disabled
+
+Hibernate schema validation:
+    enabled
+```
+
+Testing baseline:
+
+```text
+Standard verification command:
+    ./mvnw test
+
+Maven test discovery:
+    *Test.java
+    *Tests.java
+    *IT.java
+
+DB-backed verification:
+    PostgreSQL Testcontainers
+
+Web-only verification:
+    database-independent random-port web tests
+```
+
+Current bootstrap HTTP endpoint:
+
+```text
+GET /ping
+    → pong
+```
+
+API baseline:
+
+```text
+- request body validation failures are handled
+- request parameter validation failures are handled
+- malformed JSON is handled
+- bad request exceptions are handled
+- server-side invariant violations are handled as server errors
+- Problem Detail type URI catalog is deferred
+```
+
+---
+
+## 9. Implementation Baseline Docs State
+
+Implementation baseline docs are Preparation exit artifacts.
+
+Location:
+
+```text
+internal/implementation/
+```
+
+Current baseline docs:
+
+```text
+baseline-docs-reference.md
+application-baseline.md
+persistence-baseline.md
+testing-baseline.md
+api-baseline.md
+local-runtime-baseline.md
+```
+
+Purpose:
+
+```text
+Implementation baseline docs record project-wide implementation constraints that Construction implementation planning must preserve.
+```
+
+They are consumed by:
+
+```text
+- implementation planning
+- slice design decisions
+- validation planning
+- baseline preservation checks
+```
+
+They do not define:
+
+```text
+- slice-specific implementation design
+- final business schema
+- final API contracts
+- final classes or methods
+- validation evidence
+- completion evidence
+```
+
+---
+
+## 10. Verification State
+
+Automated verification command:
+
+```bash
+./mvnw test
+```
+
+Automated verification currently covers:
+
+```text
+- PostgreSQL Testcontainers integration test baseline
+- Flyway migration lifecycle against real PostgreSQL
+- baseline migration recording in flyway_schema_history
+- web smoke test
+- GET /ping returns pong
+- API error handling baseline
+- Maven test discovery for *Test.java, *Tests.java, and *IT.java
+```
+
+Manual local startup command:
+
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+Manual local startup verifies:
+
+```text
+- dev profile is active
+- local PostgreSQL is reachable
+- datasource configuration resolves
+- Flyway connects to checkout_system/app
+- baseline migration is validated/applied
+- application starts successfully
+- bootstrap HTTP endpoint is reachable
+```
+
+Manual bootstrap HTTP check:
+
+```bash
+curl http://localhost:8080/ping
+```
+
+Expected response:
+
+```text
+pong
+```
+
+---
+
+## 11. Readiness / Next Transition
+
+```text
+Stratum 6 — Application Bootstrap is complete.
+
+Preparation Phase is complete enough for exit review or Construction preparation.
+
+Construction has not started.
 ```
 
 Next expected work:
 
 ```text
-- establish Spring Boot application baseline
-- establish runtime configuration
-- establish Flyway baseline migration structure
-- connect application runtime to constrained PostgreSQL model
-- establish baseline runtime verification
+- review Preparation exit state
+- confirm implementation baselines are accepted
+- select or confirm first Construction Work Unit
+- prepare Construction execution context
+- begin SL-01 — Reservation Capacity Correctness when ready
 ```
 
 ---
 
-## 9. Deferred or Unresolved Work
-
-Deferred to later Preparation strata:
-
-```text
-- application bootstrap
-```
+## 12. Deferred or Unresolved Work
 
 Deferred to Construction:
 
@@ -299,9 +563,22 @@ Deferred to Construction:
 - Final Outcome Composition Correctness
 ```
 
+Business implementation deferred to Construction:
+
+```text
+- reservation business behavior
+- order business behavior
+- payment business behavior
+- final outcome behavior
+- business tables
+- business persistence model
+- business API endpoints
+- runtime privileges on real business tables
+```
+
 ---
 
-## 10. Last Updated Rule
+## 13. Last Updated Rule
 
 Update this document when:
 
@@ -312,6 +589,7 @@ Update this document when:
 - readiness changes
 - major active constraints change
 - deferred or unresolved work changes materially
+- implementation baseline state changes materially
 ```
 
 Do not update this document for:
@@ -325,8 +603,8 @@ Do not update this document for:
 
 ---
 
-## 11. One-Line State
+## 14. One-Line State
 
 ```text
-Stratum 5 — Service Constraints is complete; PostgreSQL authority is now constrained, executable, verifiable, and ready for Application Bootstrap.
+Preparation is complete through Application Bootstrap; the application foundation, verification baseline, and implementation baselines are ready for Construction preparation.
 ```

@@ -6,6 +6,8 @@ Local setup documentation for this project.
 
 - [Local Containers](local-containers.md)
 - [PostgreSQL Local Service](postgres-local.md)
+- [Testcontainers with Podman](testcontainers-podman.md)
+- [Testcontainers with Podman Troubleshooting](testcontainers-podman-troubleshooting.md)
 
 ## Local Application Startup
 
@@ -62,6 +64,31 @@ A graceful shutdown after `Ctrl+C` is expected and is not a failure.
 
 The `test` profile is reserved for automated tests.
 
+## Integration Test Runtime
+
+Testcontainers-based integration tests require a Docker-compatible container runtime.
+
+Supported local runtime paths:
+
+```text
+- Docker, usually auto-detected
+- Podman, with socket setup
+```
+
+Docker users usually do not need additional configuration.
+
+Podman users should follow:
+
+```text
+docs/setup/testcontainers-podman.md
+```
+
+If Podman/Testcontainers fails because the runtime cannot be detected or reached, see:
+
+```text
+docs/setup/testcontainers-podman-troubleshooting.md
+```
+
 ## Current Coverage
 
 Setup instructions are added progressively as the project becomes executable.
@@ -74,12 +101,12 @@ Current setup coverage:
 - service constraints
 - application bootstrap
 - local application startup
+- integration test runtime setup
 ```
 
 Expected future setup areas:
 
 ```text
-- integration test runtime setup
 - integration test execution baseline
 - web smoke verification
 - API error handling verification

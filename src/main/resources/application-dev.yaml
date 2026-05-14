@@ -1,3 +1,22 @@
 # Local development profile.
-# Datasource, JPA, and Flyway configuration are introduced
-# when persistence wiring is added.
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:checkout_system}?currentSchema=${DB_SCHEMA:app}
+    username: ${DB_RUNTIME_USER}
+    password: ${DB_RUNTIME_PASS}
+
+  jpa:
+    # Keep database access inside application/persistence flow,
+    # not during HTTP response rendering.
+    open-in-view: false
+
+    hibernate:
+      ddl-auto: validate
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    user: ${DB_MIGRATOR_USER}
+    password: ${DB_MIGRATOR_PASS}
+    schemas: ${DB_SCHEMA:app}
+    default-schema: ${DB_SCHEMA:app}

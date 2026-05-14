@@ -1,0 +1,2 @@
+-- Baseline migration.
+-- Business tables are intentionally not defined during Application Bootstrap.

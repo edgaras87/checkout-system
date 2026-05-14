@@ -54,6 +54,22 @@ Tomcat started on port 8080
 Started CheckoutSystemApplication
 ```
 
+To verify the bootstrap HTTP endpoint while the application is running:
+
+```bash
+curl http://localhost:8080/ping
+```
+
+Expected response:
+
+```text
+pong
+```
+
+The `/ping` endpoint is a bootstrap-level HTTP sanity endpoint.
+
+It is not checkout business behavior.
+
 Stop the application with:
 
 ```text
@@ -76,6 +92,7 @@ At this stage, this command runs the project verification baseline, including:
 
 ```text
 - PostgreSQL Testcontainers integration tests
+- web smoke tests
 ```
 
 Testcontainers-based integration tests require a Docker-compatible container runtime.
@@ -113,14 +130,15 @@ Current setup coverage:
 - service constraints
 - application bootstrap
 - local application startup
+- bootstrap HTTP sanity endpoint
 - integration test runtime setup
 - PostgreSQL integration test execution baseline
+- web smoke verification
 ```
 
 Expected future setup areas:
 
 ```text
-- web smoke verification
 - API error handling verification
 - construction-phase runtime usage
 ```

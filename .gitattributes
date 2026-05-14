@@ -1,2 +1,8 @@
 # Set default behavior to automatically normalize line endings.
 * text=auto eol=lf
+
+# Declare files that will always have LF line endings on checkout.
+/mvnw text eol=lf
+
+# Declare files that will always have CRLF line endings on checkout.
+*.cmd text eol=crlf

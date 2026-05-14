@@ -38,6 +38,9 @@ internal/project-state.md
 internal/system-definition/
     → system truth
 
+internal/implementation/
+    → implementation baseline truth
+
 internal/execution/
     → execution bridge and future Work Unit records
 
@@ -76,6 +79,9 @@ internal/project-state.md
 
 internal/system-definition/README.md
     Navigation for internal System Definition.
+
+internal/implementation/baseline-docs-reference.md
+    Navigation and rules for implementation baseline docs.
 
 internal/execution/slice-register.md
     Candidate Work Unit register and execution bridge.
@@ -309,7 +315,73 @@ This path does not define:
 - Construction slice behavior
 ```
 
-## 9. Execution Bridge Reading Path
+## 9. Implementation Baseline Reading Path
+
+Use this path when the task is about:
+
+```text
+- application implementation constraints
+- package and layer boundaries
+- persistence constraints
+- testing and verification constraints
+- API constraints
+- local runtime constraints
+- Construction implementation planning inputs
+```
+
+Read:
+
+```text
+internal/implementation/baseline-docs-reference.md
+internal/implementation/application-baseline.md
+internal/implementation/persistence-baseline.md
+internal/implementation/testing-baseline.md
+internal/implementation/api-baseline.md
+internal/implementation/local-runtime-baseline.md
+```
+
+Responsibilities:
+
+```text
+baseline-docs-reference.md
+    → explains what baseline docs are, when to use them, and how to maintain them
+
+application-baseline.md
+    → records Java, Spring Boot, Maven, package, layer, and application structure constraints
+
+persistence-baseline.md
+    → records PostgreSQL, Flyway, schema, role, and migration constraints
+
+testing-baseline.md
+    → records test execution, naming, boundary, and verification constraints
+
+api-baseline.md
+    → records HTTP, API error handling, and API expansion constraints
+
+local-runtime-baseline.md
+    → records local runtime, profile, Compose, Testcontainers, and environment constraints
+```
+
+This path defines:
+
+```text
+- project-wide implementation constraints
+- Preparation exit implementation baselines
+- constraints consumed by Construction implementation planning
+```
+
+This path does not define:
+
+```text
+- slice-specific implementation design
+- final business schema
+- final API contracts
+- final classes or methods
+- validation evidence
+- completion evidence
+```
+
+## 10. Execution Bridge Reading Path
 
 Use this path when the task is about:
 
@@ -331,7 +403,7 @@ The slice register identifies executable correctness slices.
 
 It does not solve them.
 
-## 10. Construction Reading Path
+## 11. Construction Reading Path
 
 Use this path when the task is about:
 
@@ -353,6 +425,17 @@ internal/execution/slice-register.md
 internal/execution/slices/<slice-id>-<slice-name>/
 ```
 
+For implementation planning, also read the relevant implementation baseline docs:
+
+```text
+internal/implementation/baseline-docs-reference.md
+internal/implementation/application-baseline.md
+internal/implementation/persistence-baseline.md
+internal/implementation/testing-baseline.md
+internal/implementation/api-baseline.md
+internal/implementation/local-runtime-baseline.md
+```
+
 Expected per-slice artifact location pattern:
 
 ```text
@@ -369,13 +452,14 @@ internal/execution/slices/
         correctness-construction.md
         implementation-requirements.md
 
+        implementation-plan.md
         validation-record.md
         completion-record.md
 ```
 
 Detailed slice truth belongs in the slice artifacts, not in this map.
 
-## 11. Consistency Groups
+## 12. Consistency Groups
 
 ### System Definition Consistency Group
 
@@ -433,6 +517,21 @@ internal/project-map.md
 internal/project-state.md
 ```
 
+### Implementation Baseline Consistency Group
+
+Check together when implementation baseline constraints change:
+
+```text
+internal/implementation/baseline-docs-reference.md
+internal/implementation/application-baseline.md
+internal/implementation/persistence-baseline.md
+internal/implementation/testing-baseline.md
+internal/implementation/api-baseline.md
+internal/implementation/local-runtime-baseline.md
+internal/project-map.md
+internal/project-state.md
+```
+
 ### Execution Bridge Consistency Group
 
 Check together when candidate Work Units or execution entry changes:
@@ -444,7 +543,7 @@ internal/execution/slice-register.md
 internal/project-state.md
 ```
 
-## 12. External Convention Use Rule
+## 13. External Convention Use Rule
 
 Reusable conventions live outside this repository.
 
@@ -480,7 +579,7 @@ External conventions define reusable structure and process.
 
 Project-specific truth remains in this repository.
 
-## 13. Maintenance Rule
+## 14. Maintenance Rule
 
 Update this project map when:
 
@@ -510,7 +609,7 @@ internal/project-state.md
 
 This map changes when navigation changes.
 
-## 14. One-Line Mental Model
+## 15. One-Line Mental Model
 
 ```text
 Use this map to find where to read; do not use it as the source of truth.

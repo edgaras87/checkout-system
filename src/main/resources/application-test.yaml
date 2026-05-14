@@ -1,3 +1,15 @@
 # Test profile.
-# Datasource, JPA, and Flyway configuration are introduced
-# when persistence wiring is added.
+spring:
+  jpa:
+    # Keep database access inside application/persistence flow,
+    # not during HTTP response rendering.
+    open-in-view: false
+
+    hibernate:
+      ddl-auto: validate
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    schemas: public
+    default-schema: public

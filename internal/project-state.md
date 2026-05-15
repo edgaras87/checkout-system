@@ -59,17 +59,19 @@ Correctness-driven checkout backend for resolving purchase attempts into one con
 ## 4. Current Execution Position
 
 ```text
-Phase: Preparation
+Phase: Construction
 
-Current stratum:
-    Stratum 6 — Application Bootstrap completed
-
-Status:
+Preparation status:
     Preparation Phase completed
-    ready for Preparation exit review or Construction preparation
 
 Construction status:
-    not started
+    started
+
+Current Work Unit:
+    SL-01 — Reservation Capacity Correctness
+
+Current Work Unit status:
+    in-progress
 ```
 
 ---
@@ -196,14 +198,35 @@ Completed strata:
 
 ---
 
-## 6. Active Constraints
+## 6. Current Work Unit State
+
+```text
+Current Work Unit:
+    SL-01 — Reservation Capacity Correctness
+
+Status:
+    in-progress
+
+Source register:
+    internal/execution/slice-register.md
+
+Execution location:
+    internal/execution/slices/sl-01-reservation-capacity-correctness/
+
+Version focus:
+    V1 — local correctness
+```
+
+---
+
+## 7. Active Constraints
 
 ```text
 - System Definition is the current source of system truth.
 - Public documentation is a projection of internal truth.
 - README is an entry point, not a project-state record.
 - project-map.md routes reading and does not define project truth.
-- slice-register.md is an execution bridge and does not solve Work Units.
+- slice-register.md is an execution bridge and tracks Construction Work Units.
 - The execution environment defines how local infrastructure runs.
 - Infrastructure services define which local service capabilities exist.
 - PostgreSQL authority is constrained before application behavior begins.
@@ -222,27 +245,14 @@ Completed strata:
 - Bootstrap HTTP endpoint is not business behavior.
 - API error handling baseline exists before business endpoints.
 - Implementation baseline docs constrain Construction implementation planning.
-- Construction has not started.
-- Later Construction work must align with System Definition and implementation baselines.
-```
-
-Not yet defined:
-
-```text
-- reservation business behavior
-- order business behavior
-- payment business behavior
-- final outcome business behavior
-- application business tables
-- business persistence model
-- business API endpoints
-- runtime privileges on real business tables
-- correctness slice implementation
+- Construction has started.
+- Current Construction focus is SL-01 — Reservation Capacity Correctness.
+- Construction work must align with System Definition and implementation baselines.
 ```
 
 ---
 
-## 7. Service Constraints State
+## 8. Service Constraints State
 
 Current constrained PostgreSQL authority model:
 
@@ -308,7 +318,7 @@ Current verification state:
 
 ---
 
-## 8. Application Bootstrap State
+## 9. Application Bootstrap State
 
 Application baseline:
 
@@ -427,7 +437,7 @@ API baseline:
 
 ---
 
-## 9. Implementation Baseline Docs State
+## 10. Implementation Baseline Docs State
 
 Implementation baseline docs are Preparation exit artifacts.
 
@@ -476,7 +486,7 @@ They do not define:
 
 ---
 
-## 10. Verification State
+## 11. Verification State
 
 Automated verification command:
 
@@ -528,56 +538,51 @@ pong
 
 ---
 
-## 11. Readiness / Next Transition
+## 12. Readiness / Next Transition
 
 ```text
-Stratum 6 — Application Bootstrap is complete.
+Preparation Phase is complete.
 
-Preparation Phase is complete and ready for exit review or Construction preparation.
+Construction has started.
 
-Construction has not started.
+Current active Work Unit:
+    SL-01 — Reservation Capacity Correctness
+
+Finalization readiness:
+    not ready
 ```
 
-Next expected work:
+Current Construction execution is tracked in:
 
 ```text
-- review Preparation exit state
-- confirm implementation baselines are accepted
-- select or confirm first Construction Work Unit
-- prepare Construction execution context
-- begin SL-01 — Reservation Capacity Correctness when ready
+internal/execution/slice-register.md
 ```
 
 ---
 
-## 12. Deferred or Unresolved Work
+## 13. Deferred or Unresolved Work
 
-Deferred to Construction:
+Deferred Construction Work Units:
 
 ```text
-- Reservation Capacity Correctness
 - Order Idempotency
 - Payment Interpretation Under Conflict
 - Final Outcome State Uniqueness
 - Final Outcome Composition Correctness
 ```
 
-Business implementation deferred to Construction:
+Deferred future concerns:
 
 ```text
-- reservation business behavior
-- order business behavior
-- payment business behavior
-- final outcome behavior
-- business tables
-- business persistence model
-- business API endpoints
-- runtime privileges on real business tables
+- cross-area final outcome composition correctness
+- late-arriving signal handling
+- partial information handling
+- reconciliation strategies
 ```
 
 ---
 
-## 13. Last Updated Rule
+## 14. Last Updated Rule
 
 Update this document when:
 
@@ -585,6 +590,8 @@ Update this document when:
 - a preparation stratum starts or completes
 - lifecycle position changes
 - Construction begins
+- the current Work Unit changes
+- a Work Unit completes
 - readiness changes
 - major active constraints change
 - deferred or unresolved work changes materially
@@ -594,6 +601,7 @@ Update this document when:
 Do not update this document for:
 
 ```text
+- every small implementation edit
 - ordinary wording changes
 - small documentation edits
 - navigation-only project-map changes
@@ -602,8 +610,8 @@ Do not update this document for:
 
 ---
 
-## 14. One-Line State
+## 15. One-Line State
 
 ```text
-Preparation is complete through Application Bootstrap; the application foundation, verification baseline, and implementation baselines are ready for Construction preparation.
+Preparation is complete and Construction has started with SL-01 — Reservation Capacity Correctness in progress.
 ```

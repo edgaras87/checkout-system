@@ -76,7 +76,7 @@ Source: Reservation Capacity Violation
 Responsibility area: Inventory Reservation
 Target failure: Overselling
 Dominant pressure: Concurrency
-Status: selected
+Status: in-progress
 Execution location:
     internal/execution/slices/sl-01-reservation-capacity-correctness/
 ```
@@ -158,7 +158,7 @@ Current slice:
     SL-01 — Reservation Capacity Correctness
 
 Current status:
-    selected
+    in-progress
 
 Current version focus:
     V1 — local correctness

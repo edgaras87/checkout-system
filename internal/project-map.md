@@ -347,13 +347,19 @@ baseline-docs-reference.md
     → explains what baseline docs are, when to use them, and how to maintain them
 
 application-baseline.md
-    → records Java, Spring Boot, Maven, package, layer, and application structure constraints
+    → records Java, Spring Boot, Maven, package, layer, dependency direction,
+      application port, application service, runtime wiring, and application
+      layer change boundary constraints
 
 persistence-baseline.md
-    → records PostgreSQL, Flyway, schema, role, and migration constraints
+    → records PostgreSQL, Flyway, schema, role, migration, runtime authority,
+      transaction boundary ownership, persistence change boundary, and
+      database-backed correctness constraints
 
 testing-baseline.md
-    → records test execution, naming, boundary, and verification constraints
+    → records test execution, naming, structure, verification boundaries,
+      Testcontainers usage, commit-scoped test rules, fake/stub boundaries,
+      and slice validation constraints
 
 api-baseline.md
     → records HTTP, API error handling, and API expansion constraints

@@ -1,7 +1,7 @@
 # Application Baseline
 
 Status: accepted  
-Version: v1  
+Version: v2  
 Scope: checkout-system implementation planning baseline
 
 ---
@@ -23,6 +23,10 @@ A completed slice may update this baseline only when it establishes a reusable a
 ```text
 v1:
     Created from Preparation Phase application baseline before first Construction slice.
+
+v2:
+    Clarified application port structure, application port naming, application service rules,
+    application runtime wiring boundary, and application layer change boundary for Construction implementation execution.
 ```
 
 ---
@@ -31,7 +35,7 @@ v1:
 
 This document records the current application baseline that implementation planning must preserve.
 
-It defines the established Java, Spring Boot, Maven, package, layer, and structure constraints for the project.
+It defines the established Java, Spring Boot, Maven, package, layer, structure, application port, application service, and runtime wiring constraints for the project.
 
 It answers:
 
@@ -59,6 +63,15 @@ This baseline covers:
 - profile model
 - architectural root packages
 - dependency direction
+- application layer responsibility
+- domain layer responsibility
+- infra layer responsibility
+- web layer responsibility
+- application port structure
+- application port naming
+- application service rules
+- application runtime wiring boundary
+- application layer change boundary
 - current bootstrap application features
 ```
 
@@ -72,6 +85,8 @@ This baseline does not cover:
 - final class names
 - final method signatures
 - final package additions
+- final port method names
+- final adapter implementation details
 ```
 
 ---
@@ -356,7 +371,242 @@ Implementation planning must not require final method signatures unless the cont
 
 ---
 
-## 12. Current Bootstrap Features
+## 12. Application Port Structure
+
+Application ports belong under:
+
+```text
+src/main/java/com/edge/checkout/application/port/
+```
+
+Application ports define capabilities the application needs from outside itself.
+
+Default rule:
+
+```text
+application/port/
+    application-owned port interfaces
+```
+
+When multiple ports exist or grouping improves clarity, ports may be grouped by stable application responsibility:
+
+```text
+application/port/<area>/
+```
+
+Rules:
+
+```text
+- application ports are owned by the application layer
+- application ports define what the application needs, not how the need is technically fulfilled
+- infra implements application ports
+- application ports must not expose infra, database, SQL, JPA, HTTP, or framework-specific mechanisms
+- port packages must use lowercase names
+- port area names should represent stable application or business responsibility
+- port area names must not use slice IDs, correctness artifact names, or technical mechanism names
+```
+
+Allowed examples:
+
+```text
+application/port/
+application/port/reservation/
+application/port/order/
+application/port/payment/
+```
+
+Not allowed examples:
+
+```text
+application/port/sl01/
+application/port/postgres/
+application/port/jpa/
+application/port/correctness/
+```
+
+Implementation planning may state that a port is needed.
+
+Implementation execution decides the exact package and class names when the accepted implementation responsibility requires them.
+
+---
+
+## 13. Application Port Naming
+
+Application port names should describe the capability needed by the application.
+
+Preferred pattern:
+
+```text
+<Capability>Port
+```
+
+The capability name should come from the application perspective, not from the technical implementation.
+
+Rules:
+
+```text
+- use capability-based names
+- avoid technology names in application port names
+- avoid database, SQL, JPA, HTTP, or framework terms in application port names
+- avoid naming ports after infra adapters
+- avoid naming ports after slice IDs
+- use Repository naming only when the application intentionally needs a collection-like persistence abstraction
+- do not use Repository merely because the infra adapter stores data
+```
+
+Preferred style:
+
+```text
+<BusinessCapability>Port
+<BusinessLookup>Port
+<BusinessDecision>Port
+
+OrderLookupPort
+PaymentOutcomePort
+CapacityReservationPort
+```
+
+Avoid by default:
+
+```text
+PostgresCapacityPort
+JpaOrderRepositoryPort
+SqlPaymentStorePort
+SL01ReservationPort
+```
+
+Application port method names should describe the capability requested by the application without exposing SQL, locking, transaction, adapter, or framework mechanics.
+
+Exact method names belong to implementation execution unless already accepted by an owning contract.
+
+---
+
+## 14. Application Service Rules
+
+Application services own use-case orchestration.
+
+Application services may:
+
+```text
+- receive application commands
+- coordinate domain behavior
+- call application-owned ports
+- coordinate transaction boundary placement when required by the accepted implementation strategy
+- return application results
+```
+
+Application services must not:
+
+```text
+- contain SQL
+- depend on infra adapters
+- depend on web controllers
+- depend on HTTP DTOs
+- perform database schema changes
+- bypass domain meaning when domain meaning exists
+- hide application decisions inside technical adapter calls
+```
+
+Rules:
+
+```text
+- application services express application decision flow
+- domain meaning should remain in domain when reusable business meaning exists
+- technical persistence mechanics belong behind application ports
+- HTTP concerns belong in web
+- database access belongs in infra
+```
+
+Implementation planning may identify that an application service is needed.
+
+Implementation execution decides exact service names, command names, result names, and method signatures.
+
+---
+
+## 15. Application Runtime Wiring Boundary
+
+Runtime wiring means framework-managed binding of real runtime components.
+
+Runtime wiring may include:
+
+```text
+- Spring component registration
+- dependency injection configuration
+- binding real infra adapters to application ports
+- transaction configuration
+- framework annotations that register components or define transaction participation
+```
+
+Examples:
+
+```text
+@Service
+@Component
+@Configuration
+@Bean
+@Transactional
+```
+
+Rules:
+
+```text
+- runtime wiring must not change business meaning
+- runtime wiring must not redefine application port contracts
+- runtime wiring must not make application depend on infra
+- runtime wiring must not make domain depend on Spring, infra, or web
+- runtime wiring should connect already-defined application and infra responsibilities
+- application code must not manually instantiate infra adapters
+- infra must not bypass application use cases
+```
+
+Application boundary work may define commands, results, use cases, services, and ports without wiring them into the real Spring runtime.
+
+Runtime wiring should be introduced only when the selected implementation responsibility explicitly owns wiring or executable integration behavior.
+
+---
+
+## 16. Application Layer Change Boundary
+
+Application-layer changes should preserve architectural responsibility boundaries.
+
+An application-layer change may introduce:
+
+```text
+- application commands
+- application results
+- application use-case boundaries
+- application services
+- application-owned ports
+- focused application tests using controlled fakes or stubs
+```
+
+An application-layer change must not introduce, unless the selected implementation responsibility explicitly owns it:
+
+```text
+- Flyway migrations
+- database tables
+- persistence adapters
+- JPA repositories
+- SQL
+- HTTP controllers
+- request DTOs
+- response DTOs
+- runtime wiring
+- transaction enforcement
+```
+
+Rules:
+
+```text
+- application ports may be introduced before adapters exist
+- adapter changes should implement existing application ports instead of redefining application behavior
+- wiring changes should connect existing application and infra pieces instead of adding new business rules
+- application tests with fakes or stubs may prove orchestration, but must not claim to prove persistence, durability, transaction, or concurrency behavior
+```
+
+---
+
+## 17. Current Bootstrap Features
 
 The application currently includes:
 
@@ -386,7 +636,7 @@ The application currently does not include:
 
 ---
 
-## 13. Constraints for Implementation Planning
+## 18. Constraints for Implementation Planning
 
 Implementation planning must preserve:
 
@@ -398,6 +648,10 @@ Implementation planning must preserve:
 - architecture-first root packages
 - dependency direction
 - separation between application, domain, infra, and web
+- application-owned port boundaries
+- capability-based application port naming
+- application service responsibility boundaries
+- runtime wiring boundaries
 - profile-based configuration model
 - existing bootstrap verification boundaries
 ```
@@ -411,11 +665,14 @@ Implementation planning must not assume:
 - web APIs for business behavior already exist
 - package roots should be created per slice
 - correctness artifacts should become Java packages
+- application ports should expose infra, SQL, JPA, HTTP, or framework mechanics
+- every application-layer change should also introduce runtime wiring
+- focused application tests prove persistence, durability, transaction, or concurrency behavior
 ```
 
 ---
 
-## 14. Must Preserve
+## 19. Must Preserve
 
 ```text
 Application structure expresses stable architectural ownership.
@@ -429,11 +686,17 @@ Slices must not become Java root packages.
 Correctness artifacts guide implementation but do not become runtime package roots.
 
 Application/domain decisions must remain independent from infra/web implementations.
+
+Application ports describe needed capabilities without leaking technical implementation.
+
+Application services orchestrate use-case behavior without owning technical persistence mechanics.
+
+Runtime wiring connects already-defined responsibilities without redefining business meaning.
 ```
 
 ---
 
-## 15. Must Not Assume
+## 20. Must Not Assume
 
 ```text
 Do not assume every slice needs a controller.
@@ -444,26 +707,15 @@ Do not assume every correctness concept needs a Java package.
 
 Do not assume exact class names during planning.
 
+Do not assume exact application port method names during planning.
+
 Do not assume business modules exist before code pressure proves they are needed.
 
 Do not assume implementation planning should design every class.
-```
 
----
+Do not assume application ports should be named after technologies, adapters, or slice IDs.
 
-## 16. Source References
+Do not assume runtime wiring belongs in the same change as application boundary definition.
 
-```text
-project-state.md
-src/main/java/com/edge/checkout/
-src/main/resources/
-pom.xml
-```
-
----
-
-## 17. Final Rule
-
-```text
-Application planning must preserve the Spring Boot Java 21 architecture-first baseline, keep slices inside stable layers, and delay exact class/package design until implementation execution proves the need.
+Do not assume application-layer tests with fakes or stubs prove database-backed correctness.
 ```

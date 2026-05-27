@@ -1,7 +1,7 @@
 # Persistence Baseline
 
 Status: accepted  
-Version: v1  
+Version: v2  
 Scope: checkout-system implementation planning baseline
 
 ---
@@ -23,6 +23,9 @@ A completed slice may update this baseline only when it establishes a reusable p
 ```text
 v1:
     Created from Preparation Phase persistence baseline before first Construction slice.
+
+v2:
+    Clarified transaction boundary ownership and persistence change boundaries for Construction implementation execution.
 ```
 
 ---
@@ -31,7 +34,7 @@ v1:
 
 This document records the current persistence baseline that implementation planning must preserve.
 
-It defines the established database, migration, schema, and authority constraints for the project.
+It defines the established database, migration, schema, role, runtime authority, transaction, concurrency, and persistence change constraints for the project.
 
 It answers:
 
@@ -62,6 +65,9 @@ This baseline covers:
 - runtime authority
 - Flyway migration model
 - business persistence introduction rules
+- transaction and concurrency planning
+- transaction boundary ownership
+- persistence change boundaries
 - test persistence expectations
 ```
 
@@ -76,6 +82,9 @@ This baseline does not cover:
 - repository design
 - JPA entity design
 - final SQL implementation
+- exact transaction annotations
+- exact locking strategy
+- exact persistence adapter names
 ```
 
 ---
@@ -314,13 +323,84 @@ For concurrency-sensitive slices, implementation planning must identify:
 - transaction responsibility
 ```
 
-For reservation capacity correctness, planning must not assume that application-memory checks are sufficient.
+For correctness-sensitive decisions that depend on durable shared state, planning must not assume that application-memory checks are sufficient.
 
-Correctness-sensitive capacity decisions must survive concurrent requests against the same durable state.
+When concurrency is part of the accepted pressure, correctness-sensitive decisions must survive concurrent requests against the same durable state.
 
 ---
 
-## 10. Constraints for Implementation Planning
+## 10. Transaction Boundary Ownership
+
+Transaction boundaries belong to the business decision that must be made atomic.
+
+For application-level business decisions, the application use-case or application service boundary owns when the decision begins and ends.
+
+Infra participates in a transaction by executing persistence operations required by the application decision.
+
+Infra must not secretly redefine the business decision boundary.
+
+Rules:
+
+```text
+- transaction boundaries must protect the accepted correctness unit
+- application planning must identify when one business decision requires atomic persistence behavior
+- infra implementation must preserve the application-owned decision boundary
+- persistence operations must not expose an accepted business decision without the durable effect required by that decision
+- runtime code must not use transaction behavior as a substitute for missing correctness requirements
+```
+
+When a business decision and its durable effect must be atomic, implementation must not expose the decision as accepted unless the durable effect required by that decision is committed consistently within the accepted transaction boundary.
+
+Implementation planning may state transaction responsibility.
+
+Implementation execution decides exact transaction mechanics when the accepted implementation strategy requires them.
+
+---
+
+## 11. Persistence Change Boundary
+
+Persistence changes should preserve database authority and slice responsibility boundaries.
+
+Persistence changes may introduce:
+
+```text
+- Flyway migrations
+- schema objects required by an accepted implementation plan
+- runtime privileges for new business tables
+- persistence adapters
+- database access code
+- DB-backed integration tests
+```
+
+Persistence changes must not introduce:
+
+```text
+- HTTP controllers
+- public API contracts
+- unrelated application use cases
+- broad future schema
+- unrelated tables
+- runtime schema mutation
+- Hibernate auto-DDL reliance
+- business persistence for future slices
+```
+
+Rules:
+
+```text
+- schema changes must remain migration-driven
+- runtime code must not perform DDL
+- persistence adapters must implement application-owned ports
+- persistence adapters must not own application decisions
+- durable state should be introduced only for accepted implementation responsibility
+- database-backed correctness must be validated against PostgreSQL when PostgreSQL behavior participates in enforcement
+```
+
+A persistence change should alter durable state or persistence enforcement only for the accepted implementation responsibility being implemented.
+
+---
+
+## 12. Constraints for Implementation Planning
 
 Implementation planning must preserve:
 
@@ -333,6 +413,8 @@ Implementation planning must preserve:
 - checkout_runtime as runtime authority
 - separation between DDL authority and runtime access
 - migration-driven business persistence
+- transaction boundary ownership
+- persistence change boundaries
 - real PostgreSQL validation for persistence-sensitive correctness
 ```
 
@@ -345,11 +427,14 @@ Implementation planning must not assume:
 - public schema is acceptable by default for business objects
 - in-memory persistence is sufficient for correctness slices involving durable state
 - fake repositories are sufficient for database concurrency correctness
+- persistence adapters may own application decisions
+- persistence changes may introduce unrelated future schema
+- transaction mechanics may replace missing correctness requirements
 ```
 
 ---
 
-## 11. Must Preserve
+## 13. Must Preserve
 
 ```text
 Structural database authority belongs to migration flow.
@@ -363,18 +448,22 @@ Database-backed correctness must be validated against PostgreSQL behavior when P
 Application Bootstrap remains free of business tables.
 
 The baseline migration remains neutral.
+
+Transaction boundaries must protect the business decision that must be atomic.
+
+Persistence implementation must preserve application-owned decision boundaries.
+
+Persistence changes must stay limited to the accepted implementation responsibility.
 ```
 
 ---
 
-## 12. Must Not Assume
+## 14. Must Not Assume
 
 ```text
-Do not assume reservation persistence already exists.
+Do not assume business-area persistence already exists.
 
-Do not assume capacity tables already exist.
-
-Do not assume order/payment/outcome persistence already exists.
+Do not assume capacity, order, payment, or outcome tables already exist.
 
 Do not assume runtime DDL is allowed.
 
@@ -383,11 +472,17 @@ Do not assume Hibernate ddl-auto may create schema.
 Do not assume implementation planning may define final SQL.
 
 Do not assume test simplifications redefine dev/prod persistence authority.
+
+Do not assume persistence adapters may define application decisions.
+
+Do not assume a persistence change may add broad future schema.
+
+Do not assume transaction mechanics can compensate for unclear correctness requirements.
 ```
 
 ---
 
-## 13. Source References
+## 15. Source References
 
 ```text
 project-state.md
@@ -402,8 +497,8 @@ src/main/resources/db/migration/
 
 ---
 
-## 14. Final Rule
+## 16. Final Rule
 
 ```text
-Persistence planning must preserve PostgreSQL authority boundaries, migration-driven schema ownership, and runtime DML-only access while introducing business persistence only through real Construction slice needs.
+Persistence planning must preserve PostgreSQL authority boundaries, migration-driven schema ownership, runtime DML-only access, application-owned transaction boundary decisions, and narrow persistence change responsibility while introducing business persistence only through real Construction slice needs.
 ```

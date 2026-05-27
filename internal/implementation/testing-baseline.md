@@ -1,7 +1,7 @@
 # Testing Baseline
 
 Status: accepted  
-Version: v1  
+Version: v2  
 Scope: checkout-system implementation planning baseline
 
 ---
@@ -23,6 +23,9 @@ A completed slice may update this baseline only when it establishes a reusable t
 ```text
 v1:
     Created from Preparation Phase testing baseline before first Construction slice.
+
+v2:
+    Added commit-scoped test rules and fake/stub boundary rules for Construction implementation execution.
 ```
 
 ---
@@ -62,6 +65,8 @@ This baseline covers:
 - PostgreSQL Testcontainers usage
 - current bootstrap verification coverage
 - validation expectations for future slices
+- commit-scoped test rules
+- fake and stub boundary rules
 ```
 
 This baseline does not cover:
@@ -72,6 +77,7 @@ This baseline does not cover:
 - exact fixture classes
 - exact assertion structure
 - exact test data
+- exact fake or stub implementation details
 ```
 
 ---
@@ -401,7 +407,64 @@ For concurrency-dominated persistence correctness, fake repositories are not eno
 
 ---
 
-## 13. Must Preserve
+## 13. Commit-Scoped Test Rules
+
+Tests added in an implementation commit should prove the responsibility owned by that commit.
+
+Rules:
+
+```text
+- domain commits should use focused domain tests when no Spring or database behavior is required
+- application boundary commits may use focused application tests with controlled fakes or stubs
+- application boundary tests must not claim to prove PostgreSQL, transaction, durability, or concurrency behavior
+- persistence structure commits may use DB-backed migration or structure tests when schema behavior is part of the commit responsibility
+- persistence adapter commits should use DB-backed integration tests when adapter behavior depends on real PostgreSQL behavior
+- runtime wiring commits may use Spring context or integration tests only when wiring behavior is the commit responsibility
+- transaction or concurrency commits must validate the relevant behavior against real PostgreSQL through Testcontainers
+- web/API tests should not be added unless the implementation scope includes web/API behavior
+- tests should not pull future slice behavior into the current commit
+```
+
+Commit-scoped tests should use the narrowest boundary that proves the commit responsibility.
+
+A test may be added later than the production code it validates only when the accepted commit sequence intentionally separates structure, behavior, wiring, and validation responsibilities.
+
+---
+
+## 14. Fake and Stub Boundary Rule
+
+Fakes and stubs may be used to prove application orchestration when technical persistence behavior is not the thing being validated.
+
+Allowed use:
+
+```text
+- proving that an application service calls an application port
+- proving accepted/rejected application result mapping
+- proving command/result orchestration
+- proving behavior that does not depend on database state, transaction isolation, or concurrency
+```
+
+Not allowed use:
+
+```text
+- proving database durability
+- proving migration correctness
+- proving transaction atomicity
+- proving PostgreSQL locking or conditional update behavior
+- proving concurrent correctness
+- proving runtime database privileges
+```
+
+Rule:
+
+```text
+A fake or stub can prove application flow.
+A fake or stub cannot prove database-backed correctness.
+```
+
+---
+
+## 15. Must Preserve
 
 ```text
 ./mvnw test remains the standard verification command.
@@ -419,11 +482,15 @@ Correctness involving PostgreSQL behavior is not validated using an unrelated in
 Bootstrap tests remain neutral and must not become business behavior tests.
 
 Slice tests are added only when slice implementation introduces behavior requiring validation.
+
+Commit-scoped tests should prove the responsibility owned by the commit.
+
+Fakes and stubs may prove application flow, but must not be treated as database-backed correctness evidence.
 ```
 
 ---
 
-## 14. Must Not Assume
+## 16. Must Not Assume
 
 ```text
 Do not assume all tests should start the full application.
@@ -439,11 +506,15 @@ Do not assume DB correctness can be proven by mocks.
 Do not assume concurrency correctness can be proven by single-threaded tests only.
 
 Do not assume implementation planning should write final test code.
+
+Do not assume a fake or stub can prove database durability, transaction atomicity, runtime privileges, or concurrent correctness.
+
+Do not assume one implementation commit must prove all slice behavior.
 ```
 
 ---
 
-## 15. Source References
+## 17. Source References
 
 ```text
 project-state.md
@@ -455,8 +526,8 @@ docs/setup/testcontainers-podman-troubleshooting.md
 
 ---
 
-## 16. Final Rule
+## 18. Final Rule
 
 ```text
-Testing must preserve clear verification boundaries: focused tests stay narrow, DB-free web behavior uses isolated web-layer testing, full application web tests use real required infrastructure, DB-backed correctness uses real PostgreSQL, and slice validation is planned before implementation execution writes final tests.
+Testing must preserve clear verification boundaries: focused tests stay narrow, DB-free web behavior uses isolated web-layer testing, full application web tests use real required infrastructure, DB-backed correctness uses real PostgreSQL, commit-scoped tests prove their own responsibility, fakes and stubs do not prove database-backed correctness, and slice validation is planned before implementation execution writes final tests.
 ```
